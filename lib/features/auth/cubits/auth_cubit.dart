@@ -30,6 +30,8 @@ class AuthCubit extends Cubit<AuthState> {
           await authRemoteRepository.login(email: email, password: password);
 
       emit(AuthLoggedIn(userModel));
-    } catch (e) {}
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 }
