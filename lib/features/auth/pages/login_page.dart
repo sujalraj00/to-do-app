@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/features/auth/cubits/auth_cubit.dart';
 import 'package:task_app/features/auth/pages/signup_page.dart';
+import 'package:task_app/features/home/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static MaterialPageRoute route() =>
@@ -42,8 +43,8 @@ class _LoginPageState extends State<LoginPage> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.error)));
           } else if (state is AuthLoggedIn) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("You are logged in")));
+            Navigator.pushAndRemoveUntil(
+                context, HomePage.route(), (_) => false);
           }
         },
         builder: (context, state) {
