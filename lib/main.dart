@@ -30,7 +30,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Task App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "Cera Pro",
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: const EdgeInsets.all(27),
           enabledBorder: OutlineInputBorder(
