@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:task_app/core/constants/constants.dart';
+import 'package:task_app/core/constants/utils.dart';
+import 'package:task_app/features/home/repository/task_local_repository.dart';
 import 'package:task_app/model/task_model.dart';
+import 'package:uuid/uuid.dart';
 
 class TaskRemoteRepository {
+  final taskLocalRepository = TaskLocalRepository();
   Future<TaskModel> createTask(
       {required String title,
       required String description,
@@ -29,7 +33,24 @@ class TaskRemoteRepository {
       return TaskModel.fromJson(res.body);
     } catch (e) {
       print(e.toString());
-      rethrow;
+      // store the data in the same sql db table
+
+      try {
+        final taskModel = TaskModel(
+            id: const Uuid().v4(),
+            color: hexToRgb(hexColor),
+            uid: uid,
+            title: title,
+            description: description,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            dueAt: dueAt,
+            isSynced: 0);
+        await taskLocalRepository.insertTask(taskModel);
+        return taskModel;
+      } catch (e) {
+        rethrow;
+      }
     }
   }
 
@@ -54,9 +75,14 @@ class TaskRemoteRepository {
         tasksList.add(TaskModel.fromMap(elem));
       }
 
+      await taskLocalRepository.insertTasks(tasksList);
+
       return tasksList;
     } catch (e) {
-      print(e.toString());
+      final tasks = await taskLocalRepository.getTasks();
+      if (tasks.isNotEmpty) {
+        return tasks;
+      }
       rethrow;
     }
   }

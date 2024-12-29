@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:task_app/core/constants/utils.dart';
+import 'package:task_app/features/home/repository/task_local_repository.dart';
 import 'package:task_app/features/home/repository/task_remote_repository.dart';
 import 'package:task_app/model/task_model.dart';
 part 'tasks_state.dart';
@@ -10,6 +11,7 @@ class TasksCubit extends Cubit<TasksState> {
   TasksCubit() : super(TasksInitial());
 
   final taskRemoteRepository = TaskRemoteRepository();
+  final taskLocalRepository = TaskLocalRepository();
 
   Future<void> createNewTask(
       {required String title,
@@ -27,6 +29,8 @@ class TasksCubit extends Cubit<TasksState> {
           token: token,
           dueAt: dueAt,
           uid: uid);
+
+      await taskLocalRepository.insertTask(taskModel);
 
       emit(AddNewTasksSuccess(taskModel));
     } catch (error) {

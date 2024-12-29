@@ -5,23 +5,26 @@ import 'package:task_app/core/constants/utils.dart';
 
 class TaskModel {
   final String id;
-  final String uuid;
+  final String uid;
   final String title;
   final Color color;
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime dueAt;
+  final int isSynced;
 
-  TaskModel(
-      {required this.id,
-      required this.color,
-      required this.uuid,
-      required this.title,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.dueAt});
+  TaskModel({
+    required this.id,
+    required this.color,
+    required this.uid,
+    required this.title,
+    required this.description,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.dueAt,
+    required this.isSynced,
+  });
 
   TaskModel copyWith(
       {String? id,
@@ -31,41 +34,46 @@ class TaskModel {
       DateTime? createdAt,
       DateTime? updatedAt,
       DateTime? dueAt,
-      Color? color}) {
+      Color? color,
+      int? isSynced}) {
     return TaskModel(
         id: id ?? this.id,
-        uuid: uuid ?? this.uuid,
+        uid: uuid ?? this.uid,
         title: title ?? this.title,
         description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         dueAt: dueAt ?? this.dueAt,
-        color: color ?? this.color);
+        color: color ?? this.color,
+        isSynced: isSynced ?? this.isSynced);
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'uuid': uuid,
+      'uid': uid,
       'title': title,
       'description': description,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
-      'dueAt': dueAt.millisecondsSinceEpoch,
-      'color': rgbToHex(color)
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'dueAt': dueAt.toIso8601String(),
+      'hexColor': rgbToHex(color),
+      'isSynced': isSynced
     };
   }
 
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-        id: map['id'] ?? '',
-        uuid: map['uuid'] ?? '',
-        title: map['title'] ?? '',
-        description: map['description'] ?? '',
-        createdAt: DateTime.parse(map['createdAt']),
-        updatedAt: DateTime.parse(map['updatedAt']),
-        dueAt: DateTime.parse(map['dueAt']),
-        color: hexToRgb(map['hexColor']));
+      id: map['id'] ?? '',
+      uid: map['uid'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: DateTime.parse(map['updatedAt']),
+      dueAt: DateTime.parse(map['dueAt']),
+      color: hexToRgb(map['hexColor']),
+      isSynced: map['isSynced'] ?? 1,
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -75,7 +83,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, uuid: $uuid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, color: $color)';
+    return 'TaskModel(id: $id, uuid: $uid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, color: $color)';
   }
 
   @override
@@ -83,24 +91,26 @@ class TaskModel {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.uuid == uuid &&
+        other.uid == uid &&
         other.title == title &&
         other.description == description &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
         other.dueAt == dueAt &&
-        other.color == color;
+        other.color == color &&
+        other.isSynced == isSynced;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        uuid.hashCode ^
+        uid.hashCode ^
         title.hashCode ^
         description.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
         dueAt.hashCode ^
-        color.hashCode;
+        color.hashCode ^
+        isSynced.hashCode;
   }
 }
