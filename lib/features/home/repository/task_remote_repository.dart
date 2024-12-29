@@ -10,6 +10,7 @@ class TaskRemoteRepository {
       required String description,
       required String hexColor,
       required String token,
+      required String uid,
       required DateTime dueAt}) async {
     try {
       final res = await http.post(Uri.parse("${Constants.backendUri}/tasks"),
@@ -27,6 +28,35 @@ class TaskRemoteRepository {
 
       return TaskModel.fromJson(res.body);
     } catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<TaskModel>> getTasks({
+    required String token,
+  }) async {
+    try {
+      final res = await http.get(
+        Uri.parse("${Constants.backendUri}/tasks"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+
+      if (res.statusCode != 200) {
+        throw jsonDecode(res.body)['error'];
+      }
+
+      final listofTasks = jsonDecode(res.body);
+      List<TaskModel> tasksList = [];
+
+      for (var elem in listofTasks) {
+        print(elem);
+        tasksList.add(TaskModel.fromMap(elem));
+      }
+
+      return tasksList;
+    } catch (e) {
+      print(e.toString());
       rethrow;
     }
   }
