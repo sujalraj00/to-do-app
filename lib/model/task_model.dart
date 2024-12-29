@@ -1,9 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:task_app/core/constants/utils.dart';
+
 class TaskModel {
   final String id;
   final String uuid;
   final String title;
+  final Color color;
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -11,6 +15,7 @@ class TaskModel {
 
   TaskModel(
       {required this.id,
+      required this.color,
       required this.uuid,
       required this.title,
       required this.description,
@@ -18,24 +23,24 @@ class TaskModel {
       required this.updatedAt,
       required this.dueAt});
 
-  TaskModel copyWith({
-    String? id,
-    String? uuid,
-    String? title,
-    String? description,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    DateTime? dueAt,
-  }) {
+  TaskModel copyWith(
+      {String? id,
+      String? uuid,
+      String? title,
+      String? description,
+      DateTime? createdAt,
+      DateTime? updatedAt,
+      DateTime? dueAt,
+      Color? color}) {
     return TaskModel(
-      id: id ?? this.id,
-      uuid: uuid ?? this.uuid,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      dueAt: dueAt ?? this.dueAt,
-    );
+        id: id ?? this.id,
+        uuid: uuid ?? this.uuid,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        dueAt: dueAt ?? this.dueAt,
+        color: color ?? this.color);
   }
 
   Map<String, dynamic> toMap() {
@@ -47,19 +52,20 @@ class TaskModel {
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
       'dueAt': dueAt.millisecondsSinceEpoch,
+      'color': rgbToHex(color)
     };
   }
 
   factory TaskModel.fromMap(Map<String, dynamic> map) {
     return TaskModel(
-      id: map['id'] ?? '',
-      uuid: map['uuid'] ?? '',
-      title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
-      dueAt: DateTime.parse(map['dueAt']),
-    );
+        id: map['id'] ?? '',
+        uuid: map['uuid'] ?? '',
+        title: map['title'] ?? '',
+        description: map['description'] ?? '',
+        createdAt: DateTime.parse(map['createdAt']),
+        updatedAt: DateTime.parse(map['updatedAt']),
+        dueAt: DateTime.parse(map['dueAt']),
+        color: hexToRgb(map['hexColor']));
   }
 
   String toJson() => json.encode(toMap());
@@ -69,7 +75,7 @@ class TaskModel {
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, uuid: $uuid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt)';
+    return 'TaskModel(id: $id, uuid: $uuid, title: $title, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, color: $color)';
   }
 
   @override
@@ -82,7 +88,8 @@ class TaskModel {
         other.description == description &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
-        other.dueAt == dueAt;
+        other.dueAt == dueAt &&
+        other.color == color;
   }
 
   @override
@@ -93,6 +100,7 @@ class TaskModel {
         description.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
-        dueAt.hashCode;
+        dueAt.hashCode ^
+        color.hashCode;
   }
 }
