@@ -56,4 +56,23 @@ class TasksCubit extends Cubit<TasksState> {
           "failed to create task due to some issue ${error.toString()}"));
     }
   }
+
+  Future<void> syncTasks(String token) async {
+    // GET ALL THE UNSYNCED TASK FROM OUR SQLITE DATABASE
+    final unsyncedTasks = await taskLocalRepository.getUnsyncedTasks();
+    if (unsyncedTasks.isEmpty) {
+      return;
+    }
+    print(unsyncedTasks);
+    // TALK TO THE POSTGRES DB TO ADD NEW TASK
+    final isSynced = await taskRemoteRepository.syncTasks(
+        token: token, tasks: unsyncedTasks);
+    // CHANGE THE TASKS THAT WERE ADDED TO THE DB FROM 0 TO 1
+    if (isSynced) {
+      print("sync done");
+      for (final task in unsyncedTasks) {
+        taskLocalRepository.updateRowValue(task.id, 1);
+      }
+    }
+  }
 }
