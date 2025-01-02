@@ -29,11 +29,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     final user = context.read<AuthCubit>().state as AuthLoggedIn;
     context.read<TasksCubit>().getAllTasks(token: user.user.token);
-    Connectivity().onConnectivityChanged.listen((data) {
+    Connectivity().onConnectivityChanged.listen((data) async {
       if (data.contains(ConnectivityResult.wifi)) {
-        // GET ALL THE UNSYNCED TASK FROM OUR SQLITE DATABASE
-        // TALK TO THE POSTGRES DB TO ADD NEW TASK
-        // CHANGE THE TASKS THAT WERE ADDED TO THE DB FROM 0 TO 1
+        await context.read<TasksCubit>().syncTasks(user.user.token);
       }
     });
   }
