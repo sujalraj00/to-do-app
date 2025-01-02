@@ -28,7 +28,7 @@ class TaskModel {
 
   TaskModel copyWith(
       {String? id,
-      String? uuid,
+      String? uid,
       String? title,
       String? description,
       DateTime? createdAt,
@@ -38,7 +38,7 @@ class TaskModel {
       int? isSynced}) {
     return TaskModel(
         id: id ?? this.id,
-        uid: uuid ?? this.uid,
+        uid: uid ?? this.uid,
         title: title ?? this.title,
         description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
