@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       loginUser();
