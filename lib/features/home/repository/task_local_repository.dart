@@ -41,10 +41,10 @@ class TaskLocalRepository {
     });
   }
 
-  Future<void> insertTask(TaskModel tasks) async {
+  Future<void> insertTask(TaskModel task) async {
     final db = await database;
-    await db.delete(tableName, where: 'id = ?', whereArgs: [tasks.id]);
-    db.insert(tableName, tasks.toMap());
+    await db.delete(tableName, where: 'id = ?', whereArgs: [task.id]);
+    db.insert(tableName, task.toMap());
   }
 
   Future<void> insertTasks(List<TaskModel> tasks) async {
@@ -78,7 +78,7 @@ class TaskLocalRepository {
   Future<List<TaskModel>> getUnsyncedTasks() async {
     final db = await database;
     final result =
-        await db.query(tableName, where: 'isSynced=?', whereArgs: [0]);
+        await db.query(tableName, where: 'isSynced= ?', whereArgs: [0]);
 
     if (result.isNotEmpty) {
       List<TaskModel> tasks = [];
@@ -91,5 +91,11 @@ class TaskLocalRepository {
     }
 
     return [];
+  }
+
+  Future<void> updateRowValue(String id, int newValue) async {
+    final db = await database;
+    await db.update(tableName, {'isSynced': newValue},
+        where: 'id=?', whereArgs: [id]);
   }
 }
